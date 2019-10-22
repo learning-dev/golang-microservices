@@ -11,8 +11,14 @@ func GetUser(resp http.ResponseWriter, req *http.Request){
 	userId, err := (strconv.ParseInt(req.URL.Query().Get("user_id"), 10, 64))
 	if err != nil {
 		// just return the Bad Request to the client.
-		resp.WriteHeader(http.StatusBadRequest)
-		resp.Write([]byte("user_id must be a number"))
+		apiErr : &utils.ApplicationErro{
+			Message: "user id must be a number",
+			StatusCode: http.StatusBadRequest,
+			Code: "bad_request",
+		}
+		jsonValue, _ := json.Marshal()
+		resp.WriteHeader(apiErr.StatusCode)
+		resp.Write(jsonValue)
 		return
 	}
 	user, err := services.GetUser(userId)
